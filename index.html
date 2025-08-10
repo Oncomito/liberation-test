@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+      .form-group {
+        margin: 10px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <form id="testForm">
+      <div class="form-group">  
+        <label for="inputName">Input Name :</label>
+        <input type="text" id="inputName" name="inputName" placeholder="Enter your name" required>
+      </div>
+      <div class="form-group">
+        <label for="inputAge">Input Age :</label>
+        <input type="number" id="inputAge" name="inputAge" placeholder="Enter your age" required>
+      </div>
+      <div>
+        <button type="submit" id="submitbtn">Submit</button>
+      </div>
+      <div style="margin-top: 20px;">
+        <pre id="output"></pre>
+      </div>
+      <script>
+        let list = [];
+        const addToList = (ev) => {
+          ev.preventDefault();
+          let names = {
+            id: Date.now(),
+            name: document.getElementById('inputName').value,
+            age: document.getElementById('inputAge').value
+          }
+          list.push(names);
+          document.forms['testForm'].reset();
+          console.warn("List updated", list);
+          let pre = document.querySelector('#output');
+          let theData = JSON.stringify(list, '\t', 2);
+          pre.innerHTML = '\n' + theData;
+          localStorage.setItem('list', JSON.stringify(list));
+          const fs = require('fs');
+          const saveData = (data) => {
+            const finished = (error) => {
+              if (error) {
+                console.error("Error writing file", error);
+              } else {
+                console.log("Data saved successfully");
+              }
+            };
+            fs.writeFile('test.json', theData, finished);
+          }
+          saveData(theData);
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+          document.getElementById('submitbtn').addEventListener('click', addToList);
+        });
+      </script>
+  </body>
+</html>
+
